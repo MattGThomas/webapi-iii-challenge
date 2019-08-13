@@ -46,14 +46,24 @@ router.delete('/:id', validateUserId, (req, res) => {
         res.status(200).json(user)
     })
     .catch(error => {
+        console.log(error)
         res.status(500).json({
             message: 'there was an error deleting the user'
         })
     })
 });
 
-router.put('/:id', (req, res) => {
-
+router.put('/:id', validateUserId, (req, res) => {
+    const changes = req.body
+    userDb.update(req.params.id, changes)
+    .then(updatedUser => {
+        res.status(200).json(updatedUser)
+    })
+    .catch(error => {
+        res.status(500).json({
+            message: 'there was an error applying the updates'
+        })
+    })
 });
 
 //custom middleware
