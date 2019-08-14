@@ -1,14 +1,39 @@
 const express = require('express');
 
 const userDb = require('./userDb.js')
+const postDb = require('../posts/postDb.js')
 const router = express.Router();
 
-router.post('/', (req, res) => {
-
+router.post('/', validateUser, (req, res) => {
+    userDb.insert(req.body)
+    .then(user => {
+        res.status(201).json(user)
+    })
+    .catch(error => {
+        console.log(error)
+        res.status(500).json({
+            message: 'there was an error adding the user'
+        })
+    })
 });
 
-router.post('/:id/posts', (req, res) => {
-
+router.post('/:id/posts',[validateUserId, validatePost], (req, res) => {
+    if(req.body){
+        req.body.user_id = req.params.id
+        console.log(req.body)
+        postDb.insert(req.body, req.body.user_id)
+        .then(post => {
+            res.status(201).json(post)
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(500).json({
+                message: 'there was an error adding the post'
+            })
+        })
+    } else {
+        res.status(400).json({ error: 'missing required body' })
+    }
 });
 
 router.get('/', (req, res) => {
