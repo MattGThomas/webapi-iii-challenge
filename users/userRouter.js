@@ -10,7 +10,6 @@ router.post('/', validateUser, (req, res) => {
         res.status(201).json(user)
     })
     .catch(error => {
-        console.log(error)
         res.status(500).json({
             message: 'there was an error adding the user'
         })
@@ -19,14 +18,12 @@ router.post('/', validateUser, (req, res) => {
 
 router.post('/:id/posts',[validateUserId, validatePost], (req, res) => {
     if(req.body){
-        req.body.user_id = req.params.id
-        console.log(req.body)
-        postDb.insert(req.body, req.body.user_id)
+        const id = req.body.user_id = req.params.id
+        postDb.insert(req.body, id)
         .then(post => {
             res.status(201).json(post)
         })
         .catch(error => {
-            console.log(error)
             res.status(500).json({
                 message: 'there was an error adding the post'
             })
@@ -42,7 +39,6 @@ router.get('/', (req, res) => {
         res.status(200).json(user)
     })
     .catch(error => {
-        console.log(error)
         res.status(500).json({
             message: 'there was an error getting the users'
         })
@@ -71,7 +67,6 @@ router.delete('/:id', validateUserId, (req, res) => {
         res.status(200).json(user)
     })
     .catch(error => {
-        console.log(error)
         res.status(500).json({
             message: 'there was an error deleting the user'
         })
@@ -106,7 +101,6 @@ function validateUserId(req, res, next) {
         }
     })
     .catch(error => {
-        console.log(error)
         res.status(500).json({
             message: 'there was an error processing the request'
         })
